@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #4cc9f0;
+            --warning-color: #f72585;
+            --info-color: #7209b7;
+            --dark-color: #2b2d42;
+            --light-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --body-bg: #f0f2f5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--body-bg);
+            color: var(--dark-color);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        /* Header Styles */
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            border-radius: 0 0 25px 25px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1.5rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            margin-right: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+
+        .logo-text p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 0;
+        }
+
+        .time-display {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 500;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Dashboard Container */
+        .dashboard-container {
+            padding: 0 1.5rem;
+        }
+
+        /* Main Counter Card */
+        .counter-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: none;
+            text-align: center;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .counter-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .counter-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+        }
+
+        .card-icon {
+            font-size: 3.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            background: rgba(67, 97, 238, 0.1);
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-subtitle {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+        }
+
+        .counter-value {
+            font-size: 4.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .counter-update {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Stats Cards */
+        .stats-container {
+            margin-bottom: 2rem;
+        }
+
+        .stats-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+            border: none;
+            height: 100%;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-icon {
+            font-size: 2.2rem;
+            margin-right: 1.2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stats-icon-1 {
+            color: var(--success-color);
+            background: rgba(76, 201, 240, 0.1);
+        }
+
+        .stats-icon-2 {
+            color: var(--warning-color);
+            background: rgba(247, 37, 133, 0.1);
+        }
+
+        .stats-icon-3 {
+            color: var(--info-color);
+            background: rgba(114, 9, 183, 0.1);
+        }
+
+        .stats-content h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+        }
+
+        .stats-content p {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        /* Controls Section */
+        .controls-container {
+            margin-bottom: 2rem;
+        }
+
+        .control-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+            border: none;
+            height: 100%;
+        }
+
+        .control-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .control-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        .btn-control {
+            padding: 12px 20px;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border: none;
+            width: 100%;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-control i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+
+        .btn-increment {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+        }
+
+        .btn-decrement {
+            background: linear-gradient(135deg, var(--warning-color) 0%, #c9184a 100%);
+            color: white;
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+        }
+
+        .btn-control:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Settings Section */
+        .settings-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+            border: none;
+            height: 100%;
+        }
+
+        .settings-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .settings-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 10px 15px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+        }
+
+        .custom-range {
+            height: 10px;
+            border-radius: 5px;
+        }
+
+        .custom-range::-webkit-slider-thumb {
+            background: var(--primary-color);
+        }
+
+        .custom-range::-moz-range-thumb {
+            background: var(--primary-color);
+        }
+
+        /* Footer */
+        .dashboard-footer {
+            background: var(--dark-color);
+            color: white;
+            padding: 1.5rem 0;
+            margin-top: 3rem;
+            border-radius: 25px 25px 0 0;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1.5rem;
+        }
+
+        .footer-text {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .footer-links a {
+            color: white;
+            margin-left: 1rem;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+            text-decoration: none;
+        }
+
+        /* Animation for counter */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .counter-pulse {
+            animation: pulse 0.5s ease;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .counter-value {
+                font-size: 4rem;
+            }
+
+            .card-icon {
+                width: 90px;
+                height: 90px;
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                padding: 1.2rem 0;
+                border-radius: 0 0 20px 20px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .logo {
+                margin-bottom: 1rem;
+            }
+
+            .time-display {
+                margin-top: 0.5rem;
+            }
+
+            .counter-value {
+                font-size: 3.5rem;
+            }
+
+            .card-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 2.5rem;
+            }
+
+            .counter-card {
+                padding: 2rem;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-links {
+                margin-top: 1rem;
+            }
+
+            .footer-links a {
+                margin: 0 0.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .dashboard-container {
+                padding: 0 1rem;
+            }
+
+            .counter-value {
+                font-size: 3rem;
+            }
+
+            .card-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 2.2rem;
+            }
+
+            .counter-card {
+                padding: 1.5rem;
+            }
+
+            .stats-card {
+                padding: 1.2rem;
+            }
+
+            .stats-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.8rem;
+                margin-right: 1rem;
+            }
+
+            .stats-content h3 {
+                font-size: 1.6rem;
+            }
+
+            .control-card,
+            .settings-card {
+                padding: 1.2rem;
+            }
+        }
+
+        /* Dark Mode Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* Dark Theme */
+        body.dark-theme {
+            --body-bg: #121212;
+            --card-bg: #1e1e1e;
+            --dark-color: #f8f9fa;
+            --light-color: #2d2d2d;
+        }
+
+        body.dark-theme .counter-card,
+        body.dark-theme .stats-card,
+        body.dark-theme .control-card,
+        body.dark-theme .settings-card {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        body.dark-theme .form-control {
+            background-color: #2d2d2d;
+            border-color: #444;
+            color: #f8f9fa;
+        }
+
+        body.dark-theme .dashboard-footer {
+            background: #1a1a1a;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Dark Mode Toggle -->
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Real-Time Dashboard</h1>
+                    <p>Live Data Monitoring & Analytics</p>
+                </div>
+            </div>
+            <div class="time-display">
+                <i class="fas fa-clock mr-2"></i>
+                <span id="currentTime">Loading...</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="dashboard-container">
+        <div class="row">
+            <!-- Main Counter Card -->
+            <div class="col-lg-8">
+                <div class="counter-card">
+                    <div class="card-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <h2 class="card-title">Real-Time Counter</h2>
+                    <p class="card-subtitle">Live updates every second</p>
+                    <div class="counter-value" id="counter">0</div>
+                    <p class="counter-update">Last updated: <span id="lastUpdate">Just now</span></p>
+
+                    <!-- Counter Progress -->
+                    <div class="progress mt-4" style="height: 12px; border-radius: 10px;">
+                        <div id="counterProgress" class="progress-bar bg-primary" role="progressbar"
+                            style="width: 0%; border-radius: 10px;" aria-valuenow="0" aria-valuemin="0"
+                            aria-valuemax="100"></div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-2">
+                        <small>0</small>
+                        <small>Target: 100</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="col-lg-4">
+                <div class="stats-container">
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <div class="stats-card">
+                                <div class="stats-icon stats-icon-1">
+                                    <i class="fas fa-sync-alt"></i>
+                                </div>
+                                <div class="stats-content">
+                                    <h3 id="updatesCount">0</h3>
+                                    <p>Total Updates</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <div class="stats-card">
+                                <div class="stats-icon stats-icon-2">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <div class="stats-content">
+                                    <h3 id="speedValue">1s</h3>
+                                    <p>Update Speed</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="stats-card">
+                                <div class="stats-icon stats-icon-3">
+                                    <i class="fas fa-chart-bar"></i>
+                                </div>
+                                <div class="stats-content">
+                                    <h3 id="peakValue">0</h3>
+                                    <p>Peak Value Today</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls and Settings -->
+        <div class="row mt-4">
+            <!-- Controls -->
+            <div class="col-lg-4 mb-4">
+                <div class="control-card">
+                    <h3 class="control-title">
+                        <i class="fas fa-sliders-h"></i> Controls
+                    </h3>
+
+                    <button class="btn btn-control btn-increment" id="incrementBtn">
+                        <i class="fas fa-plus"></i> Increment Counter
+                    </button>
+
+                    <button class="btn btn-control btn-decrement" id="decrementBtn">
+                        <i class="fas fa-minus"></i> Decrement Counter
+                    </button>
+
+                    <button class="btn btn-control btn-reset" id="resetBtn">
+                        <i class="fas fa-redo"></i> Reset Counter
+                    </button>
+
+                    <div class="mt-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="autoIncrement" checked>
+                            <label class="form-check-label" for="autoIncrement">
+                                Auto-increment every second
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings -->
+            <div class="col-lg-8">
+                <div class="settings-card">
+                    <h3 class="settings-title">
+                        <i class="fas fa-cog"></i> Settings
+                    </h3>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label" for="updateSpeed">Update Speed</label>
+                                <input type="range" class="custom-range" id="updateSpeed" min="100" max="5000"
+                                    step="100" value="1000">
+                                <div class="d-flex justify-content-between mt-1">
+                                    <small>Fast (0.1s)</small>
+                                    <small id="speedDisplay">1.0s</small>
+                                    <small>Slow (5.0s)</small>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="incrementValue">Increment Value</label>
+                                <input type="range" class="custom-range" id="incrementValue" min="1" max="10" step="1"
+                                    value="1">
+                                <div class="d-flex justify-content-between mt-1">
+                                    <small>1</small>
+                                    <small id="incrementDisplay">1</small>
+                                    <small>10</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label" for="counterGoal">Counter Goal</label>
+                                <input type="number" class="form-control" id="counterGoal" min="10" max="1000"
+                                    value="100">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="counterColor">Counter Color</label>
+                                <select class="form-control" id="counterColor">
+                                    <option value="#4361ee">Blue</option>
+                                    <option value="#4cc9f0">Cyan</option>
+                                    <option value="#f72585">Pink</option>
+                                    <option value="#7209b7">Purple</option>
+                                    <option value="#38b000">Green</option>
+                                </select>
+                            </div>
+
+                            <button class="btn btn-primary btn-block mt-3" id="applySettings">
+                                <i class="fas fa-check-circle mr-2"></i> Apply Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+        <div class="footer-content">
+            <div class="footer-text">
+                <p>&copy; 2023 Real-Time Dashboard. All rights reserved.</p>
+            </div>
+            <div class="footer-links">
+                <a href="#"><i class="fab fa-github"></i> GitHub</a>
+                <a href="#"><i class="fas fa-question-circle"></i> Help</a>
+                <a href="#"><i class="fas fa-cog"></i> Settings</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Initialize variables
+            let counter = 0;
+            let updatesCount = 0;
+            let peakValue = 0;
+            let autoIncrement = true;
+            let updateInterval = 1000; // Default 1 second
+            let incrementValue = 1;
+            let counterGoal = 100;
+            let counterColor = "#4361ee";
+            let intervalId;
+
+            // Update current time
+            function updateTime() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                $('#currentTime').text(timeString);
+            }
+
+            // Update counter display
+            function updateCounter() {
+                $('#counter').text(counter);
+                $('#lastUpdate').text(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+
+                // Update progress bar
+                const progressPercent = Math.min((counter / counterGoal) * 100, 100);
+                $('#counterProgress').css('width', progressPercent + '%');
+
+                // Update peak value
+                if (counter > peakValue) {
+                    peakValue = counter;
+                    $('#peakValue').text(peakValue);
+                }
+
+                // Add pulse animation
+                $('#counter').addClass('counter-pulse');
+                setTimeout(() => {
+                    $('#counter').removeClass('counter-pulse');
+                }, 500);
+
+                // Update counter color
+                $('#counter').css('color', counterColor);
+                $('.btn-increment').css('background', `linear-gradient(135deg, ${counterColor} 0%, ${darkenColor(counterColor, 20)} 100%)`);
+                $('#counterProgress').css('background-color', counterColor);
+            }
+
+            // Helper function to darken a color
+            function darkenColor(color, percent) {
+                let R = parseInt(color.substring(1, 3), 16);
+                let G = parseInt(color.substring(3, 5), 16);
+                let B = parseInt(color.substring(5, 7), 16);
+
+                R = parseInt(R * (100 - percent) / 100);
+                G = parseInt(G * (100 - percent) / 100);
+                B = parseInt(B * (100 - percent) / 100);
+
+                R = (R < 255) ? R : 255;
+                G = (G < 255) ? G : 255;
+                B = (B < 255) ? B : 255;
+
+                const RR = ((R.toString(16).length === 1) ? "0" + R.toString(16) : R.toString(16));
+                const GG = ((G.toString(16).length === 1) ? "0" + G.toString(16) : G.toString(16));
+                const BB = ((B.toString(16).length === 1) ? "0" + B.toString(16) : B.toString(16));
+
+                return "#" + RR + GG + BB;
+            }
+
+            // Start auto-increment
+            function startAutoIncrement() {
+                if (intervalId) clearInterval(intervalId);
+
+                intervalId = setInterval(function () {
+                    if (autoIncrement) {
+                        counter += incrementValue;
+                        updatesCount++;
+                        $('#updatesCount').text(updatesCount);
+                        updateCounter();
+                    }
+                }, updateInterval);
+            }
+
+            // Initialize
+            updateTime();
+            updateCounter();
+            startAutoIncrement();
+
+            // Update time every second
+            setInterval(updateTime, 1000);
+
+            // Button event handlers
+            $('#incrementBtn').click(function () {
+                counter += incrementValue;
+                updatesCount++;
+                $('#updatesCount').text(updatesCount);
+                updateCounter();
+            });
+
+            $('#decrementBtn').click(function () {
+                counter = Math.max(0, counter - incrementValue);
+                updatesCount++;
+                $('#updatesCount').text(updatesCount);
+                updateCounter();
+            });
+
+            $('#resetBtn').click(function () {
+                counter = 0;
+                updatesCount++;
+                $('#updatesCount').text(updatesCount);
+                updateCounter();
+            });
+
+            // Auto-increment toggle
+            $('#autoIncrement').change(function () {
+                autoIncrement = $(this).is(':checked');
+                if (autoIncrement) {
+                    startAutoIncrement();
+                } else {
+                    clearInterval(intervalId);
+                }
+            });
+
+            // Settings controls
+            $('#updateSpeed').on('input', function () {
+                updateInterval = parseInt($(this).val());
+                const speedDisplay = updateInterval / 1000;
+                $('#speedDisplay').text(speedDisplay.toFixed(1) + 's');
+                $('#speedValue').text(speedDisplay.toFixed(1) + 's');
+
+                if (autoIncrement) {
+                    startAutoIncrement();
+                }
+            });
+
+            $('#incrementValue').on('input', function () {
+                incrementValue = parseInt($(this).val());
+                $('#incrementDisplay').text(incrementValue);
+            });
+
+            $('#counterGoal').on('change', function () {
+                counterGoal = parseInt($(this).val());
+                updateCounter();
+            });
+
+            $('#counterColor').on('change', function () {
+                counterColor = $(this).val();
+                updateCounter();
+            });
+
+            $('#applySettings').click(function () {
+                // Show feedback
+                $(this).html('<i class="fas fa-check mr-2"></i> Settings Applied');
+                $(this).removeClass('btn-primary').addClass('btn-success');
+
+                setTimeout(() => {
+                    $(this).html('<i class="fas fa-check-circle mr-2"></i> Apply Settings');
+                    $(this).removeClass('btn-success').addClass('btn-primary');
+                }, 2000);
+            });
+
+            // Theme toggle
+            $('#themeToggle').click(function () {
+                $('body').toggleClass('dark-theme');
+                const icon = $(this).find('i');
+
+                if ($('body').hasClass('dark-theme')) {
+                    icon.removeClass('fa-moon').addClass('fa-sun');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    icon.removeClass('fa-sun').addClass('fa-moon');
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+
+            // Load saved theme
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                $('body').addClass('dark-theme');
+                $('#themeToggle i').removeClass('fa-moon').addClass('fa-sun');
+            }
+
+            // Initialize displays
+            $('#speedDisplay').text((updateInterval / 1000).toFixed(1) + 's');
+            $('#speedValue').text((updateInterval / 1000).toFixed(1) + 's');
+            $('#incrementDisplay').text(incrementValue);
+        });
+    </script>
+</body>
+
+</html>

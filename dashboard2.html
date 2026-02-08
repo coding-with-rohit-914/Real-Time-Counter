@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Live Dashboard | Real-Time Analytics</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <style>
+        :root {
+            --primary-50: #f0f9ff;
+            --primary-100: #e0f2fe;
+            --primary-500: #0ea5e9;
+            --primary-600: #0284c7;
+            --primary-700: #0369a1;
+
+            --secondary-50: #fdf4ff;
+            --secondary-500: #d946ef;
+            --secondary-600: #c026d3;
+
+            --success-50: #f0fdf4;
+            --success-500: #22c55e;
+            --success-600: #16a34a;
+
+            --warning-50: #fefce8;
+            --warning-500: #eab308;
+            --warning-600: #ca8a04;
+
+            --danger-50: #fef2f2;
+            --danger-500: #ef4444;
+            --danger-600: #dc2626;
+
+            --dark-50: #f8fafc;
+            --dark-100: #f1f5f9;
+            --dark-700: #334155;
+            --dark-800: #1e293b;
+            --dark-900: #0f172a;
+
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --shadow-xl: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--dark-900) 0%, var(--dark-800) 50%, var(--dark-700) 100%);
+            color: var(--dark-50);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(217, 70, 239, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(34, 197, 94, 0.1) 0%, transparent 50%);
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        /* Main Container */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .dashboard-header {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-500), var(--secondary-500));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 10px 20px rgba(14, 165, 233, 0.3);
+        }
+
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-500), var(--secondary-500));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.2rem;
+        }
+
+        .logo-text p {
+            font-size: 0.9rem;
+            color: var(--dark-100);
+            opacity: 0.8;
+        }
+
+        /* Live Clock */
+        .live-clock {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(217, 70, 239, 0.1));
+            padding: 1rem 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            text-align: center;
+            min-width: 200px;
+        }
+
+        .clock-time {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-500), var(--dark-50));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+
+        .clock-date {
+            font-size: 0.9rem;
+            color: var(--dark-100);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Card Styles */
+        .dashboard-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-500);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark-50);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-title i {
+            color: var(--primary-500);
+        }
+
+        /* Real-Time Counter Card */
+        .counter-card {
+            grid-column: 1;
+        }
+
+        .counter-display {
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .counter-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-500), var(--secondary-500));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 1rem 0;
+            text-shadow: 0 10px 30px rgba(14, 165, 233, 0.3);
+        }
+
+        .counter-progress {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-500), var(--secondary-500));
+            border-radius: 4px;
+            position: relative;
+            transition: width 0.5s ease;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--dark-100);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Controls */
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .control-btn {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .control-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .control-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-increment {
+            background: linear-gradient(135deg, var(--success-500), var(--success-600));
+            color: white;
+        }
+
+        .btn-decrement {
+            background: linear-gradient(135deg, var(--danger-500), var(--danger-600));
+            color: white;
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, var(--warning-500), var(--warning-600));
+            color: white;
+        }
+
+        /* Analytics Card */
+        .analytics-card {
+            grid-column: 2;
+            grid-row: span 2;
+        }
+
+        .metric-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .metric-item:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .metric-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .metric-value {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            height: 250px;
+            margin-top: 1.5rem;
+            position: relative;
+        }
+
+        /* Bottom Grid */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Settings Panel */
+        .settings-panel {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.8));
+        }
+
+        .setting-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .setting-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark-100);
+        }
+
+        .custom-slider {
+            width: 100%;
+            height: 6px;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .custom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-500);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-500), var(--secondary-500));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-xl);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .analytics-card {
+                grid-column: 1;
+                grid-row: auto;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-container {
+                padding: 1rem;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .counter-value {
+                font-size: 4rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                gap: 1rem;
+            }
+
+            .dashboard-card {
+                padding: 1.5rem;
+            }
+
+            .counter-value {
+                font-size: 3.5rem;
+            }
+
+            .clock-time {
+                font-size: 1.8rem;
+            }
+
+            .control-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .counter-value {
+                font-size: 3rem;
+            }
+
+            .clock-time {
+                font-size: 1.5rem;
+            }
+
+            .logo-text h1 {
+                font-size: 1.5rem;
+            }
+
+            .dashboard-card {
+                padding: 1rem;
+            }
+
+            .theme-toggle {
+                bottom: 1rem;
+                right: 1rem;
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation Classes */
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Animated Background -->
+    <div class="gradient-bg"></div>
+
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-palette"></i>
+    </div>
+
+    <!-- Main Dashboard Container -->
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="logo-section">
+                <div class="logo-icon animate-float">
+                    <i class="fas fa-chart-network"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>QUANTUM LIVE</h1>
+                    <p>Real-Time Analytics Dashboard</p>
+                </div>
+            </div>
+
+            <!-- Live Clock -->
+            <div class="live-clock">
+                <div class="clock-time" id="liveClock">00:00:00</div>
+                <div class="clock-date" id="liveDate">Loading...</div>
+            </div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <div class="main-grid">
+            <!-- Real-Time Counter Card -->
+            <div class="dashboard-card counter-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-tachometer-alt"></i> Real-Time Counter
+                    </h3>
+                    <div class="badge bg-primary px-3 py-2 rounded-pill">
+                        <i class="fas fa-sync-alt mr-1"></i> Live
+                    </div>
+                </div>
+
+                <div class="counter-display">
+                    <div class="counter-value" id="counter">0</div>
+                    <div class="counter-progress">
+                        <div class="progress-bar" id="counterProgress" style="width: 0%"></div>
+                    </div>
+                    <div class="d-flex justify-content-between text-muted small">
+                        <span>MIN: <span id="minValue">0</span></span>
+                        <span>CURRENT</span>
+                        <span>MAX: <span id="maxValue">100</span></span>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(34, 197, 94, 0.1); color: var(--success-500);">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <div class="stat-value" id="updatesCount">0</div>
+                        <div class="stat-label">Total Updates</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(14, 165, 233, 0.1); color: var(--primary-500);">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <div class="stat-value" id="speedValue">1.0s</div>
+                        <div class="stat-label">Update Speed</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(234, 179, 8, 0.1); color: var(--warning-500);">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-value" id="peakValue">0</div>
+                        <div class="stat-label">Peak Value</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon"
+                            style="background: rgba(217, 70, 239, 0.1); color: var(--secondary-500);">
+                            <i class="fas fa-arrow-trend-up"></i>
+                        </div>
+                        <div class="stat-value" id="avgValue">0</div>
+                        <div class="stat-label">Average</div>
+                    </div>
+                </div>
+
+                <!-- Control Buttons -->
+                <div class="control-grid">
+                    <button class="control-btn btn-increment" id="incrementBtn">
+                        <i class="fas fa-plus-circle"></i> Increment
+                    </button>
+                    <button class="control-btn btn-decrement" id="decrementBtn">
+                        <i class="fas fa-minus-circle"></i> Decrement
+                    </button>
+                    <button class="control-btn btn-reset" id="resetBtn">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+
+                <!-- Auto Update Toggle -->
+                <div class="mt-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="autoIncrement" checked
+                            style="width: 3em; height: 1.5em;">
+                        <label class="form-check-label ms-2" for="autoIncrement">
+                            <i class="fas fa-robot me-1"></i> Auto-increment enabled
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Card -->
+            <div class="dashboard-card analytics-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-chart-pie"></i> Live Analytics
+                    </h3>
+                    <span class="badge bg-secondary px-3 py-2 rounded-pill pulse">
+                        <i class="fas fa-circle"></i> Active
+                    </span>
+                </div>
+
+                <div class="metric-list">
+                    <div class="metric-item">
+                        <div class="metric-label">
+                            <div class="metric-icon"
+                                style="background: rgba(14, 165, 233, 0.1); color: var(--primary-500);">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <span>Uptime</span>
+                        </div>
+                        <div class="metric-value" id="uptimeValue">00:00:00</div>
+                    </div>
+
+                    <div class="metric-item">
+                        <div class="metric-label">
+                            <div class="metric-icon"
+                                style="background: rgba(34, 197, 94, 0.1); color: var(--success-500);">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <span>Performance</span>
+                        </div>
+                        <div class="metric-value" id="performanceValue">100%</div>
+                    </div>
+
+                    <div class="metric-item">
+                        <div class="metric-label">
+                            <div class="metric-icon"
+                                style="background: rgba(217, 70, 239, 0.1); color: var(--secondary-500);">
+                                <i class="fas fa-wave-square"></i>
+                            </div>
+                            <span>Live Updates</span>
+                        </div>
+                        <div class="metric-value" id="liveUpdates">0/s</div>
+                    </div>
+
+                    <div class="metric-item">
+                        <div class="metric-label">
+                            <div class="metric-icon"
+                                style="background: rgba(234, 179, 8, 0.1); color: var(--warning-500);">
+                                <i class="fas fa-memory"></i>
+                            </div>
+                            <span>System Load</span>
+                        </div>
+                        <div class="metric-value" id="systemLoad">24%</div>
+                    </div>
+                </div>
+
+                <!-- Live Chart -->
+                <div class="chart-container">
+                    <canvas id="analyticsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Settings Panel -->
+        <div class="bottom-grid">
+            <div class="dashboard-card settings-panel">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-sliders-h"></i> Dashboard Settings
+                    </h3>
+                </div>
+
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <label class="setting-label">Update Speed: <span id="speedDisplay">1.0s</span></label>
+                        <input type="range" class="custom-slider" id="updateSpeed" min="100" max="5000" step="100"
+                            value="1000">
+                        <div class="d-flex justify-content-between mt-1">
+                            <small class="text-muted">Fast (0.1s)</small>
+                            <small class="text-muted">Slow (5.0s)</small>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <label class="setting-label">Increment Value: <span id="incrementDisplay">1</span></label>
+                        <input type="range" class="custom-slider" id="incrementValue" min="1" max="20" step="1"
+                            value="1">
+                        <div class="d-flex justify-content-between mt-1">
+                            <small class="text-muted">1</small>
+                            <small class="text-muted">20</small>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <label class="setting-label">Counter Goal: <span id="goalDisplay">100</span></label>
+                        <input type="range" class="custom-slider" id="counterGoal" min="10" max="1000" step="10"
+                            value="100">
+                        <div class="d-flex justify-content-between mt-1">
+                            <small class="text-muted">10</small>
+                            <small class="text-muted">1000</small>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <label class="setting-label">Color Theme</label>
+                        <div class="d-flex gap-2 mt-2">
+                            <button class="btn btn-sm"
+                                style="background: var(--primary-500); width: 30px; height: 30px; border-radius: 50%;"
+                                data-color="blue"></button>
+                            <button class="btn btn-sm"
+                                style="background: var(--success-500); width: 30px; height: 30px; border-radius: 50%;"
+                                data-color="green"></button>
+                            <button class="btn btn-sm"
+                                style="background: var(--secondary-500); width: 30px; height: 30px; border-radius: 50%;"
+                                data-color="purple"></button>
+                            <button class="btn btn-sm"
+                                style="background: var(--warning-500); width: 30px; height: 30px; border-radius: 50%;"
+                                data-color="yellow"></button>
+                            <button class="btn btn-sm"
+                                style="background: var(--danger-500); width: 30px; height: 30px; border-radius: 50%;"
+                                data-color="red"></button>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary w-100 mt-3 py-2" id="applySettings">
+                    <i class="fas fa-check-circle me-2"></i> Apply Settings
+                </button>
+            </div>
+
+            <!-- System Status Card -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-server"></i> System Status
+                    </h3>
+                    <span class="badge bg-success px-3 py-2 rounded-pill">
+                        <i class="fas fa-check-circle"></i> Online
+                    </span>
+                </div>
+
+                <div class="system-metrics">
+                    <div class="metric-item">
+                        <div class="metric-label">
+                            <div class="metric-icon"
+                                style="background: rgba(34, 197, 94, 0.1); color: var(--success-500);">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <span>Database</span>
+                        </div>
+                        <div class="progress" style="height: 8px; width: 100px;">
+                            <div class="progress-bar bg-success" style="width: 85%"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric-item">
+                        <div class="metric-label">
+                            <div class="metric-icon"
+                                style="background: rgba(14, 165, 233, 0.1); color: var(--primary-500);">
+                                <i class="fas fa-network-wired"></i>
+                            </div>
+                            <span>Network</span>
+                        </div>
+                        <div class="progress" style="height: 8px; width: 100px;">
+                            <div class="progress-bar bg-primary" style="width: 92%"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric-item">
+                        <div class="metric-label">
+                            <div class="metric-icon"
+                                style="background: rgba(234, 179, 8, 0.1); color: var(--warning-500);">
+                                <i class="fas fa-microchip"></i>
+                            </div>
+                            <span>CPU Usage</span>
+                        </div>
+                        <div class="progress" style="height: 8px; width: 100px;">
+                            <div class="progress-bar bg-warning" style="width: 65%"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric-item">
+                        <div class="metric-label">
+                            <div class="metric-icon"
+                                style="background: rgba(217, 70, 239, 0.1); color: var(--secondary-500);">
+                                <i class="fas fa-memory"></i>
+                            </div>
+                            <span>Memory</span>
+                        </div>
+                        <div class="progress" style="height: 8px; width: 100px;">
+                            <div class="progress-bar bg-purple" style="width: 78%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <small class="text-muted">Last updated: <span id="lastSystemUpdate">Just now</span></small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Initialize variables
+            let counter = 0;
+            let updatesCount = 0;
+            let peakValue = 0;
+            let minValue = 0;
+            let totalValue = 0;
+            let autoIncrement = true;
+            let updateInterval = 1000;
+            let incrementValue = 1;
+            let counterGoal = 100;
+            let intervalId;
+            let startTime = new Date();
+            let chart;
+
+            // Initialize live clock
+            function updateClock() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                const dateString = now.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                $('#liveClock').text(timeString);
+                $('#liveDate').text(dateString);
+            }
+
+            // Update uptime
+            function updateUptime() {
+                const now = new Date();
+                const diff = now - startTime;
+
+                const hours = Math.floor(diff / 3600000);
+                const minutes = Math.floor((diff % 3600000) / 60000);
+                const seconds = Math.floor((diff % 60000) / 1000);
+
+                const uptimeString =
+                    hours.toString().padStart(2, '0') + ':' +
+                    minutes.toString().padStart(2, '0') + ':' +
+                    seconds.toString().padStart(2, '0');
+
+                $('#uptimeValue').text(uptimeString);
+            }
+
+            // Initialize Chart.js
+            function initChart() {
+                const ctx = document.getElementById('analyticsChart').getContext('2d');
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: Array.from({ length: 20 }, (_, i) => ''),
+                        datasets: [{
+                            label: 'Counter Value',
+                            data: Array(20).fill(0),
+                            borderColor: '#0ea5e9',
+                            backgroundColor: 'rgba(14, 165, 233, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 3,
+                            pointBackgroundColor: '#0ea5e9'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                display: false,
+                                grid: { display: false }
+                            },
+                            y: {
+                                display: false,
+                                grid: { display: false }
+                            }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'nearest'
+                        },
+                        elements: {
+                            point: {
+                                radius: 0,
+                                hoverRadius: 6
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Update chart
+            function updateChart() {
+                if (!chart) return;
+
+                chart.data.datasets[0].data.push(counter);
+                chart.data.labels.push('');
+
+                if (chart.data.datasets[0].data.length > 20) {
+                    chart.data.datasets[0].data.shift();
+                    chart.data.labels.shift();
+                }
+
+                chart.update('none');
+            }
+
+            // Update counter display
+            function updateCounter() {
+                $('#counter').text(counter);
+
+                // Update progress bar
+                const progressPercent = Math.min((counter / counterGoal) * 100, 100);
+                $('#counterProgress').css('width', progressPercent + '%');
+
+                // Update peak value
+                if (counter > peakValue) {
+                    peakValue = counter;
+                    $('#peakValue').text(peakValue);
+                }
+
+                // Update min value
+                if (counter < minValue || updatesCount === 1) {
+                    minValue = counter;
+                    $('#minValue').text(minValue);
+                }
+
+                // Update average
+                totalValue += counter;
+                const avgValue = Math.round(totalValue / updatesCount);
+                $('#avgValue').text(avgValue);
+
+                // Update max value display
+                $('#maxValue').text(counterGoal);
+
+                // Update chart
+                updateChart();
+
+                // Add animation effect
+                $('#counter').addClass('animate__animated animate__pulse');
+                setTimeout(() => {
+                    $('#counter').removeClass('animate__animated animate__pulse');
+                }, 300);
+
+                // Update system time
+                $('#lastSystemUpdate').text(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+            }
+
+            // Start auto-increment
+            function startAutoIncrement() {
+                if (intervalId) clearInterval(intervalId);
+
+                intervalId = setInterval(function () {
+                    if (autoIncrement) {
+                        counter += incrementValue;
+                        updatesCount++;
+                        $('#updatesCount').text(updatesCount);
+                        updateCounter();
+
+                        // Update live updates per second
+                        $('#liveUpdates').text('1/s');
+                    }
+                }, updateInterval);
+            }
+
+            // Initialize
+            updateClock();
+            initChart();
+            updateCounter();
+            startAutoIncrement();
+
+            // Update clock every second
+            setInterval(updateClock, 1000);
+
+            // Update uptime every second
+            setInterval(updateUptime, 1000);
+
+            // Update performance metrics
+            setInterval(() => {
+                $('#performanceValue').text(Math.floor(Math.random() * 20 + 80) + '%');
+                $('#systemLoad').text(Math.floor(Math.random() * 30 + 20) + '%');
+            }, 3000);
+
+            // Button event handlers
+            $('#incrementBtn').click(function () {
+                counter += incrementValue;
+                updatesCount++;
+                $('#updatesCount').text(updatesCount);
+                updateCounter();
+
+                // Show toast notification
+                showToast('Incremented', 'Counter increased by ' + incrementValue, 'success');
+            });
+
+            $('#decrementBtn').click(function () {
+                counter = Math.max(0, counter - incrementValue);
+                updatesCount++;
+                $('#updatesCount').text(updatesCount);
+                updateCounter();
+                showToast('Decremented', 'Counter decreased by ' + incrementValue, 'warning');
+            });
+
+            $('#resetBtn').click(function () {
+                counter = 0;
+                updatesCount++;
+                $('#updatesCount').text(updatesCount);
+                updateCounter();
+                showToast('Reset', 'Counter has been reset to 0', 'danger');
+            });
+
+            // Auto-increment toggle
+            $('#autoIncrement').change(function () {
+                autoIncrement = $(this).is(':checked');
+                if (autoIncrement) {
+                    startAutoIncrement();
+                    showToast('Auto-Increment', 'Enabled automatic updates', 'info');
+                } else {
+                    clearInterval(intervalId);
+                    showToast('Auto-Increment', 'Disabled automatic updates', 'warning');
+                }
+            });
+
+            // Settings controls
+            $('#updateSpeed').on('input', function () {
+                updateInterval = parseInt($(this).val());
+                const speedDisplay = (updateInterval / 1000).toFixed(1);
+                $('#speedDisplay').text(speedDisplay + 's');
+                $('#speedValue').text(speedDisplay + 's');
+
+                if (autoIncrement) {
+                    startAutoIncrement();
+                }
+            });
+
+            $('#incrementValue').on('input', function () {
+                incrementValue = parseInt($(this).val());
+                $('#incrementDisplay').text(incrementValue);
+            });
+
+            $('#counterGoal').on('input', function () {
+                counterGoal = parseInt($(this).val());
+                $('#goalDisplay').text(counterGoal);
+                updateCounter();
+            });
+
+            // Color theme buttons
+            $('[data-color]').click(function () {
+                const color = $(this).data('color');
+                const colors = {
+                    blue: { primary: '#0ea5e9', secondary: '#0284c7' },
+                    green: { primary: '#22c55e', secondary: '#16a34a' },
+                    purple: { primary: '#d946ef', secondary: '#c026d3' },
+                    yellow: { primary: '#eab308', secondary: '#ca8a04' },
+                    red: { primary: '#ef4444', secondary: '#dc2626' }
+                };
+
+                if (colors[color]) {
+                    $(':root').css({
+                        '--primary-500': colors[color].primary,
+                        '--primary-600': colors[color].secondary
+                    });
+
+                    // Update chart color
+                    if (chart) {
+                        chart.data.datasets[0].borderColor = colors[color].primary;
+                        chart.data.datasets[0].backgroundColor = colors[color].primary + '20';
+                        chart.data.datasets[0].pointBackgroundColor = colors[color].primary;
+                        chart.update();
+                    }
+
+                    showToast('Theme Changed', 'Color theme updated to ' + color, 'success');
+                }
+            });
+
+            // Apply settings
+            $('#applySettings').click(function () {
+                const btn = $(this);
+                btn.html('<i class="fas fa-spinner fa-spin me-2"></i> Applying...');
+                btn.prop('disabled', true);
+
+                setTimeout(() => {
+                    btn.html('<i class="fas fa-check-circle me-2"></i> Settings Applied');
+                    btn.removeClass('btn-primary').addClass('btn-success');
+
+                    setTimeout(() => {
+                        btn.html('<i class="fas fa-check-circle me-2"></i> Apply Settings');
+                        btn.removeClass('btn-success').addClass('btn-primary');
+                        btn.prop('disabled', false);
+                    }, 2000);
+
+                    showToast('Settings Updated', 'All settings applied successfully', 'success');
+                }, 500);
+            });
+
+            // Theme toggle
+            $('#themeToggle').click(function () {
+                const icon = $(this).find('i');
+                if (icon.hasClass('fa-palette')) {
+                    icon.removeClass('fa-palette').addClass('fa-sun');
+                    $('body').css('background', 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)');
+                    $('body').css('color', '#1e293b');
+                    showToast('Theme Changed', 'Switched to light mode', 'info');
+                } else {
+                    icon.removeClass('fa-sun').addClass('fa-palette');
+                    $('body').css('background', 'linear-gradient(135deg, var(--dark-900) 0%, var(--dark-800) 50%, var(--dark-700) 100%)');
+                    $('body').css('color', 'var(--dark-50)');
+                    showToast('Theme Changed', 'Switched to dark mode', 'info');
+                }
+            });
+
+            // Toast notification function
+            function showToast(title, message, type) {
+                // Create toast element
+                const toast = $(`
+                    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050">
+                        <div class="toast show" role="alert">
+                            <div class="toast-header">
+                                <strong class="me-auto">${title}</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                            </div>
+                            <div class="toast-body">
+                                ${message}
+                            </div>
+                        </div>
+                    </div>
+                `);
+
+                // Add to body
+                $('body').append(toast);
+
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    toast.remove();
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+
+</html>
